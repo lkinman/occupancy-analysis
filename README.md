@@ -19,7 +19,7 @@ To install the subunit occupancy code, simply git clone the source code:
 git clone https://github.com/lkinman/occupancy-analysis.git
 ```
 
-## Prerequisits
+## Prerequisites
 To conduct subunit occupancy analysis, users will need to have input maps they wish to analyze as .mrc files, as well as a PDB file or files containing the corresponding atomic model. This atomic model can be either an existent file from the PDB, or a newly-generated atomic model. The PDB file must be aligned to the experimental maps (this can be done in Chimera or ChimeraX) and must be segmented so that each chain represents a subunit of interest.
 
 ## Using  

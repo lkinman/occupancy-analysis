@@ -26,10 +26,74 @@ To conduct subunit occupancy analysis, users will need to have input maps they w
 A step-by-step protocol for using the protocol can be found in the literature listed above. A brief overview of the scripts provided is given below.  
 
 This software comprises 3 scripts and an additional interactive Jupyter notebook. The scripts:  
-1) Take an input pdb file, which is aligned to the experimental maps and segmented into pre-defined chains delineating the subunits of interest, and convert it into a series of .mrc files.
-2) Take the .mrc files output by step 1 and use RELION to convert them into masks. 
-3) Read in the masks from step 2 and the experimental maps, apply each of the masks to each of the maps, (optionally) normalize to the total volume of the masked region, and finally output an occupancies.csv file containing fractional occupancy measurements for each subunit in each map. 
+**1) Take an input pdb file, which is aligned to the experimental maps and segmented into pre-defined chains delineating the subunits of interest, and convert it into a series of .mrc files.** 
+  
+```
+python pdb2mrc.py --help
+usage: pdb2mrc.py [-h] --map MAP --pdb PDB --chains CHAINS --res RES --out OUT
+                  --scriptdir SCRIPTDIR
 
+optional arguments:
+  -h, --help            show this help message and exit
+  --map MAP             Example map that you want to determine the occupancy
+                        of
+  --pdb PDB             PDB file used for creating the mask
+  --chains CHAINS       PDB chain used for creating the mask
+  --res RES             Resolution to filter the maps to
+  --out OUT             Output directory
+  --scriptdir SCRIPTDIR
+                        Directory to store Chimera scripts
+```  
+e.g.
+  
+```
+python pdb2mrc.py --map 00_aligned/vol_000.mrc --pdb 00_aligned/atomicmodel.pdb --chains abcdefghijklmnopqrstuvwxyz --res 5 --out 01_PDB_mrc --scriptdir 01_chimera_scripts
+```  
+Note that the --res flag should be changed depending on the approximate resolution of your maps.
+
+
+**2) Take the .mrc files output by step 1 and use RELION to convert them into masks.** 
+  
+```
+python mrc2mask.py --help
+usage: mrc2mask.py [-h] --pdb PDB --outdir OUTDIR [--extend EXTEND]
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --pdb PDB        PDB file used for creating the mask
+  --outdir OUTDIR  Output directory to store the masks in
+  --extend EXTEND  Number of angstroms to extend initial mask by
+```  
+ e.g.   
+   
+ ```
+ for i in ./01_PDB_mrc/*.mrc; do python mrc2mask.py $i --outdir 02_masks; done
+ ```  
+   
+**3) Read in the masks from step 2 and the experimental maps, apply each of the masks to each of the maps, (optionally) normalize to the total volume of the masked region, and finally output an occupancies.csv file containing fractional occupancy measurements for each subunit in each map.**
+  
+```
+ python calc_occupancy.py --help
+usage: calc_occupancy.py [-h] --mapdir MAPDIR --maskdir MASKDIR
+                         [--refdir REFDIR] [--outdir OUTDIR]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --mapdir MAPDIR    Directory where sampled volumes are stored
+  --maskdir MASKDIR  Directory where subunit masks are stored
+  --refdir REFDIR    Directory where reference maps from the atomic model are
+                     stored
+  --outdir OUTDIR    Directory in which to store output data
+```
+e.g.  
+
+```
+python calc_occupancy.py --mapdir 00_aligned --maskdir 02_mask --refdir 01_PDB_mrc --outdir 03_occupancies
+```
+   
+Note that we generally recommend normalizing to the reference maps, as otherwise the signal will largely be dominated by the size of the subunit, with larger subunits showing higher occupancy. 
+
+## Analysis of results
 An interactive Jupyter notebook is also provided to analyze the output results by performing hierarchical clustering on the outputs. This Jupyter notebook also creates scripts to interface with ChimeraX and directly visualize volumes of interest, as well as offers several tools to visualize occupancy distributions on a per-subunit basis to examine occupancy correlations between different subunits.  
 
 ## Other uses

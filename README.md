@@ -1,8 +1,7 @@
 # Subunit occupancy analysis
 Subunit occupancy analysis is used for the systematic analysis of compositionally-heterogeneous cryo-EM datasets. This code is designed to work downstream of [cryoDRGN](https://github.com/zhonge/cryodrgn), after users have generated a large number of maps (usually 500-1000) systematically sampling the latent space, but can be applied to any ensemble of volumes. 
-
-__add illustrative outputs__ 
-
+  
+  
 ## Literature
      
    
@@ -30,11 +29,13 @@ A step-by-step protocol for using the protocol can be found in the literature li
 
 This software comprises 3 scripts and an additional interactive Jupyter notebook. The scripts:  
 **1) Take an input pdb file, which is aligned to the experimental maps and segmented into pre-defined chains delineating the subunits of interest, and convert it into a series of .mrc files.** 
+
+The conversion of an aligned, segmented PDB file into a series of .mrc files corresponding to each chain in the PDB file is done in ChimeraX with the ```--nogui``` flag, using [the molmap command](https://www.cgl.ucsf.edu/chimerax/docs/user/commands/molmap.html) that is itself based on [EMAN's pdb2mrc function](https://blake.bcm.edu/emanwiki/PdbToMrc). 
   
 ```
-python pdb2mrc.py --help
-usage: pdb2mrc.py [-h] --map MAP --pdb PDB --chains CHAINS --res RES --out OUT
-                  --scriptdir SCRIPTDIR
+python gen_mrcs.py --help
+usage: gen_mrcs.py [-h] --map MAP --pdb PDB --chains CHAINS --res RES --out
+                   OUT --scriptdir SCRIPTDIR
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -45,12 +46,12 @@ optional arguments:
   --res RES             Resolution to filter the maps to
   --out OUT             Output directory
   --scriptdir SCRIPTDIR
-                        Directory to store Chimera scripts
+                        Directory to store ChimeraX scripts
 ```  
 e.g.
   
 ```
-python pdb2mrc.py --map 00_aligned/vol_000.mrc --pdb 00_aligned/atomicmodel.pdb --chains abcdefghijklmnopqrstuvwxyz --res 5 --out 01_PDB_mrc --scriptdir 01_chimera_scripts
+python gen_mrcs.py --map 00_aligned/vol_000.mrc --pdb 00_aligned/atomicmodel.pdb --chains abcdefghijklmnopqrstuvwxyz --res 5 --out 01_PDB_mrc --scriptdir 01_chimera_scripts
 ```  
 Note that the --res flag should be changed depending on the approximate resolution of your maps. The --map flag should just be one of the ensemble of .mrc volumes you have sampled from the latent space.
 
@@ -59,19 +60,19 @@ Note that the --res flag should be changed depending on the approximate resoluti
   
 This script is a wrapper for ``` relion_mask_create ``` that iterates through making all the masks and systematically naming them.  
 ```
-python mrc2mask.py --help
-usage: mrc2mask.py [-h] --pdb PDB --outdir OUTDIR [--extend EXTEND]
+python gen_masks.py --help
+usage: gen_masks.py [-h] --mrc MRC --outdir OUTDIR [--extend EXTEND]
 
 optional arguments:
   -h, --help       show this help message and exit
-  --pdb PDB        PDB file used for creating the mask
+  --mrc MRC        MRC file used for creating the mask
   --outdir OUTDIR  Output directory to store the masks in
   --extend EXTEND  Number of angstroms to extend initial mask by
 ```  
  e.g.   
    
  ```
- for i in ./01_PDB_mrc/*.mrc; do python mrc2mask.py $i --outdir 02_masks; done
+ for i in ./01_PDB_mrc/*.mrc; do python mrc2mask.py --mrc $i --outdir 02_masks; done
  ```  
    
 **3) Read in the masks from step 2 and the experimental maps, apply each of the masks to each of the maps, (optionally) normalize to the total volume of the masked region, and finally output an occupancies.csv file containing fractional occupancy measurements for each subunit in each map.**
@@ -95,12 +96,12 @@ e.g.
 python calc_occupancy.py --mapdir 00_aligned --maskdir 02_mask --refdir 01_PDB_mrc --outdir 03_occupancies
 ```
    
-Note that we generally recommend normalizing to the reference maps, as otherwise the signal will largely be dominated by the size of the subunit, with larger subunits showing higher occupancy. If the optional --refdir argument is not supplied, no normalization will be applied. 
+Note that we generally recommend normalizing to the reference maps, as otherwise the signal will largely be dominated by the size of the subunit, with larger subunits showing higher occupancy. If the optional ```--refdir``` argument is not supplied, no normalization will be applied. 
 
 ## Analysis of results
 An interactive Jupyter notebook is also provided to analyze the output results by performing hierarchical clustering on the outputs. This Jupyter notebook also creates scripts to interface with ChimeraX and directly visualize volumes of interest, as well as offers several tools to visualize occupancy distributions on a per-subunit basis to examine occupancy correlations between different subunits.  
 
 ## Other uses
-Some users may also wish to implement subunit occupancy analysis in the absence of an atomic model, to identify particles with high occupancy of a particular region of a map. This can be done by creating a pseudo-atom or molecule in Chimera/ChimeraX, and using the --extend flag in the mrc2mask.py script.  
+Some users may also wish to implement subunit occupancy analysis in the absence of an atomic model, to identify particles with high occupancy of a particular region of a map. This can be done by creating a pseudo-atom or molecule in Chimera/ChimeraX, and using the ```--extend``` flag in the mrc2mask.py script.  
 
 Additionally, as mentioned previously, this software was designed to enable systematic analysis of the structural landscapes produced by cryoDRGN training, and requires a functioning cryoDRGN install. However, it should be possible to feed an ensemble of maps from any upstream processing software to this analysis pipeline, provided that they are supplied in the appropriate .mrc format and aligned to the same frame of reference. Depending on the upstream processing, these maps may also need to be amplitude-scaled. This functionality has not been tested. 

@@ -72,7 +72,7 @@ optional arguments:
  e.g.   
    
  ```
- for i in ./01_PDB_mrc/*.mrc; do python mrc2mask.py --mrc $i --outdir 02_masks; done
+ for i in ./01_PDB_mrc/*.mrc; do python gen_masks.py --mrc $i --outdir 02_masks; done
  ```  
    
 **3) Read in the masks from step 2 and the experimental maps, apply each of the masks to each of the maps, (optionally) normalize to the total volume of the masked region, and finally output an occupancies.csv file containing fractional occupancy measurements for each subunit in each map.**

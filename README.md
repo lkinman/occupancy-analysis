@@ -93,7 +93,7 @@ optional arguments:
 e.g.  
 
 ```
-python calc_occupancy.py --mapdir 00_aligned --maskdir 02_mask --refdir 01_PDB_mrc --outdir 03_occupancies
+python calc_occupancy.py --mapdir 00_aligned --maskdir 02_masks --refdir 01_PDB_mrc --outdir 03_occupancies
 ```
    
 Note that we generally recommend normalizing to the reference maps, as otherwise the signal will largely be dominated by the size of the subunit, with larger subunits showing higher occupancy. If the optional ```--refdir``` argument is not supplied, no normalization will be applied. 

@@ -82,7 +82,7 @@ def main(args):
             pdb_name, chain = parse_name(reffile, vol_type = 'ref')
             ref_val = ref.sum()
         
-        occupancies[(pdb_name, chain)] = occupancies[(pdb_name, chain)]/ref_val
+            occupancies[(pdb_name, chain)] = occupancies[(pdb_name, chain)]/ref_val
             
     print('saving occupancies.csv')
     occupancies.to_csv(outdir + 'occupancies.csv')

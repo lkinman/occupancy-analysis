@@ -83,7 +83,8 @@ def main(args):
             ref_val = ref.sum()
         
             occupancies[(pdb_name, chain)] = occupancies[(pdb_name, chain)]/ref_val
-            
+    
+    assert len(occupancies) > 0, 'No occupancies calculated, check input variables'
     print('saving occupancies.csv')
     occupancies.to_csv(outdir + 'occupancies.csv')
 

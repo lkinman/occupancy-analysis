@@ -1,3 +1,7 @@
+# OCCUPANCY ANALYSIS/MAVEN LANDING PAGE
+The software formerly known as subunit occupancy analysis (in the 2023 Nature Protocols publication) is now known as MAVEn, and incorporates several new features, including voxel PCA and on-the-fly occupancy querying of all particles in a cryoDRGN training run. All future versions will be updated in the [MAVEn repository](https://github.com/lkinman/MAVEn) rather than the occupancy-analysis repository. 
+
+
 # Subunit occupancy analysis
 Subunit occupancy analysis is used for the systematic analysis of compositionally-heterogeneous cryo-EM datasets. This code is designed to work downstream of [cryoDRGN](https://github.com/zhonge/cryodrgn), after users have generated a large number of maps (usually 500-1000) systematically sampling the latent space, but can be applied to any ensemble of volumes. 
   

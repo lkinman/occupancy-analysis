@@ -4,7 +4,7 @@ The software formerly known as subunit occupancy analysis (in the 2023 Nature Pr
 This code and documentation is left in place as the version corresponding to the 2023 Nature Protocols paper cite below. Unless users are specifically recapitulating the results from that paper, they are referred to the updated and maintained versions of the code at the [MAVEn repository] (https://github.com/MAVEn) 
 
 
-## Subunit occupancy analysis
+### Subunit occupancy analysis
 Subunit occupancy analysis is used for the systematic analysis of compositionally-heterogeneous cryo-EM datasets. This code is designed to work downstream of [cryoDRGN](https://github.com/zhonge/cryodrgn), after users have generated a large number of maps (usually 500-1000) systematically sampling the latent space, but can be applied to any ensemble of volumes. 
   
   

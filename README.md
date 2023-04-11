@@ -1,4 +1,4 @@
-# OCCUPANCY ANALYSIS/MAVEN LANDING PAGE
+# Subunit occupancy analysis/MAVEn landing page
 The software formerly known as subunit occupancy analysis (in the 2023 Nature Protocols publication) is now known as MAVEn, and incorporates several new features, including voxel PCA and on-the-fly occupancy querying of all particles in a cryoDRGN training run. All future versions will be updated in the [MAVEn repository](https://github.com/lkinman/MAVEn) rather than the occupancy-analysis repository. 
 
 
